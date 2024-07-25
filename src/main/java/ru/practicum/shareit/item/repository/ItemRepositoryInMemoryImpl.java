@@ -56,8 +56,8 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
         Item item = null;
         for (Long ownerId : items.keySet()) {
             item = items.get(ownerId).stream()
-                    .filter(i -> i.getId() == itemId).
-                    findFirst().orElse(null);
+                    .filter(i -> i.getId() == itemId)
+                    .findFirst().orElse(null);
         }
         return item;
     }

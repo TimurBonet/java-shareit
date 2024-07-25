@@ -9,7 +9,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 @Slf4j
 public class ItemRequestMapper {
 
-    public ItemRequestDto ItemRequestToDto(ItemRequest itemRequest) {
+    public ItemRequestDto itemRequestDto(ItemRequest itemRequest) {
         return ItemRequestDto.builder()
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor())
