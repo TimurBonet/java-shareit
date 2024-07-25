@@ -36,7 +36,7 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
             if (uniqueEmails.add(user.getEmail())) {
                 uniqueEmails.remove(users.get(user.getId()).getEmail());
             } else {
-                throw new EmailAlreadyUsedException("Пользователь с такой почтой уже зарегистрирован.");
+                throw new EmailAlreadyUsedException("Пользователь с такой почтой уже зарегистрирован!");
             }
         }
         log.debug("Updating user: {}, with id {}", user, user.getId());
