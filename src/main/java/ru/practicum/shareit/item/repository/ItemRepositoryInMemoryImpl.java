@@ -82,7 +82,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
 
     private int getItemIndex(Long itemId, Long userId) {
         return IntStream.range(0, items.get(userId).size())
-                .filter(i -> items.get(userId).get(i).getId() == itemId)
+                .filter(i -> items.get(userId).get(i).getId().equals(itemId))
                 .findFirst()
                 .orElse(-1);
     }
