@@ -1,17 +1,12 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
-@EqualsAndHashCode(of = {"id"})
 @Builder
-public class User {
+public class UserDto {
     private Long id;
     private String name;
     @Email
