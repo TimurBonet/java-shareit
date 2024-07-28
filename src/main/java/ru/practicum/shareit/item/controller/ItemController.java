@@ -1,17 +1,17 @@
 package ru.practicum.shareit.item.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import static ru.practicum.shareit.item.constants.Constant.HEADER;
+
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -19,16 +19,17 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
+
     @GetMapping("{itemId}")
-    public ItemDto getItemById(@PathVariable long itemId, HttpServletRequest request) {
+    public ItemDto getItemById(@PathVariable long itemId, @RequestHeader(HEADER) String userId) {
         log.info("Getting item by id {}", itemId);
-        return itemService.getItemById(itemId, request.getIntHeader("X-Sharer-User-Id"));
+        return itemService.getItemById(itemId, Integer.parseInt(userId));
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwnerId(HttpServletRequest request) {
-        log.info("Getting items by owner id{}", request.getIntHeader("X-Sharer-User-Id"));
-        return itemService.getItemsByOwnerId(request.getIntHeader("X-Sharer-User-Id"));
+    public List<ItemDto> getItemsByOwnerId(@RequestHeader(HEADER) String userId) {
+        log.info("Getting items by owner id{}", userId);
+        return itemService.getItemsByOwnerId(Integer.parseInt(userId));
     }
 
     @GetMapping("/search")
@@ -38,15 +39,15 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestBody ItemDto itemDto, HttpServletRequest request) {
-        log.info("Creating item {} by user id {}", itemDto, request.getIntHeader("X-Sharer-User-Id"));
-        return itemService.createItem(itemDto, request.getIntHeader("X-Sharer-User-Id"));
+    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
+        log.info("Creating item {} by user id {}", itemDto, userId);
+        return itemService.createItem(itemDto, Integer.parseInt(userId));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto, HttpServletRequest request) {
-        log.info("Updating item {}, itemId {}, userId {}", itemDto, itemId, request.getIntHeader("X-Sharer-User-Id"));
+    public ItemDto updateItem(@PathVariable long itemId, @Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
+        log.info("Updating item {}, itemId {}, userId {}", itemDto, itemId, userId);
         itemDto.setId(itemId);
-        return itemService.updateItem(itemDto, request.getIntHeader("X-Sharer-User-Id"));
+        return itemService.updateItem(itemDto, Integer.parseInt(userId));
     }
 }

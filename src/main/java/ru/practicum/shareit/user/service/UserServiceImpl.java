@@ -2,8 +2,10 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EmptyFieldsException;
+import ru.practicum.shareit.exception.MethodArgumentNotValidException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
@@ -25,6 +27,10 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
             throw new EmptyFieldsException("Email не заполнен");
         }
+        boolean isValid = EmailValidator.getInstance().isValid(userDto.getEmail());
+        if (!isValid) {
+            throw new MethodArgumentNotValidException("Некорректный email адрес");
+        }
         log.debug("Try creating user: {}", userDto);
         return userToDto(userRepository.createUser(dtoToUser(userDto)));
     }
@@ -34,14 +40,14 @@ public class UserServiceImpl implements UserService {
         checkId(userDto.getId());
         log.debug("Try updating user: {}", userDto);
         return userToDto(userRepository
-                .updateUser(dtoToUserUpdate(userDto, userRepository.getUserById(userDto.getId()))));
+                .updateUser(dtoToUserUpdate(userDto, userRepository.getUserById(userDto.getId()).get())));
     }
 
     @Override
     public UserDto getUserById(long id) {
         checkId(id);
         log.debug("Try get user by id: {}", id);
-        return userToDto(userRepository.getUserById(id));
+        return userToDto(userRepository.getUserById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден")));
     }
 
     @Override

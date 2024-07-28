@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.EmailAlreadyUsedException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
-
 
 @Component
 @RequiredArgsConstructor
@@ -32,22 +32,23 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     @Override
     public User updateUser(User user) {
         long id = user.getId();
-        if (!user.getEmail().equals(users.get(user.getId()).getEmail())) {
+        User currentUser = users.get(user.getId());
+        if (!user.getEmail().equals(currentUser.getEmail())) {
             if (uniqueEmails.add(user.getEmail())) {
-                uniqueEmails.remove(users.get(user.getId()).getEmail());
+                uniqueEmails.remove(currentUser.getEmail());
             } else {
                 throw new EmailAlreadyUsedException("Пользователь с такой почтой уже зарегистрирован!");
             }
         }
         log.debug("Updating user: {}, with id {}", user, user.getId());
         users.put(id, user);
-        return users.get(user.getId());
+        return user;
     }
 
     @Override
-    public User getUserById(long id) {
+    public Optional<User> getUserById(long id) {
         log.info("Get user by id: {}", id);
-        return users.get(id);
+        return Optional.ofNullable(Optional.ofNullable(users.get(id)).orElseThrow(() -> new NotFoundException("Пользователь не найден")));
     }
 
     @Override
@@ -59,7 +60,6 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     @Override
     public void deleteUser(long id) {
         log.info("Deleting user by id: {}", id);
-        uniqueEmails.remove(users.get(id).getEmail());
-        users.remove(id);
+        uniqueEmails.remove(users.remove(id).getEmail());
     }
 }

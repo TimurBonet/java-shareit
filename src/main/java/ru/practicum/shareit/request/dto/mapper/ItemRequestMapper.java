@@ -1,12 +1,10 @@
 package ru.practicum.shareit.request.dto.mapper;
 
 import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 @UtilityClass
-@Slf4j
 public class ItemRequestMapper {
 
     public ItemRequestDto itemRequestDto(ItemRequest itemRequest) {

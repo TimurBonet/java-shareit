@@ -7,10 +7,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,7 +23,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     public Item createItem(Item item, long ownerId) {
         log.info("Creating new item");
         item.setId(++itemId);
-        item.setOwner(userRepository.getUserById(ownerId));
+        item.setOwner(userRepository.getUserById(ownerId).get());
         items.compute(ownerId, (id, userItems) -> {
             if (userItems == null) {
                 userItems = new ArrayList<>();
@@ -51,7 +48,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item getItemById(long itemId) {
+    public Optional<Item> getItemById(long itemId) {
         log.info("Getting item {}", itemId);
         Item item = null;
         for (Long ownerId : items.keySet()) {
@@ -59,7 +56,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
                     .filter(i -> i.getId() == itemId)
                     .findFirst().orElse(null);
         }
-        return item;
+        return Optional.of(item);
     }
 
     @Override

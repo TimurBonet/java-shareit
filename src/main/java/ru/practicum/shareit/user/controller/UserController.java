@@ -9,9 +9,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -34,6 +31,7 @@ public class UserController {
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         log.info("Create user: {}", userDto);
+
         return userService.createUser(userDto);
     }
 

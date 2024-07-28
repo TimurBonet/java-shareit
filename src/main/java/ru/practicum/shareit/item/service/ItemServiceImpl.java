@@ -44,7 +44,7 @@ public class ItemServiceImpl implements ItemService {
         checkItemId(itemDto.getId());
         log.info("Updating item with id {} and ownerId {}", itemDto.getId(), ownerId);
         return itemToDto(itemRepository.updateItem(dtoToItemUpdate(itemDto, itemRepository
-                .getItemById(itemDto.getId())), ownerId));
+                .getItemById(itemDto.getId()).get()), ownerId));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         checkUserId(ownerId);
         checkItemId(itemId);
         log.info("Retrieving item with id {} and ownerId {}", itemId, ownerId);
-        return itemToDto(itemRepository.getItemById(itemId));
+        return itemToDto(itemRepository.getItemById(itemId).get());
     }
 
     @Override
@@ -79,9 +79,10 @@ public class ItemServiceImpl implements ItemService {
         if (userId == -1) {
             throw new BadHeaderException("Нет пользователя с id " + userId + " в заголовке");
         }
-        if (userService.getAllUsers().stream().map(UserDto::getId).noneMatch(x -> x.equals(userId))) {
+        if (userService.getUserById(userId).equals(null)) {
             throw new NotFoundException("Пользователь с id: " + userId + " на найден");
         }
+
     }
 
     private void checkItemId(long itemId) {

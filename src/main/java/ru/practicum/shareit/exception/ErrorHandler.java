@@ -13,29 +13,29 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(NotFoundException e) {
-        log.error("Возникло исключение NotFoundException. {}", e.getMessage());
+        log.warn("Возникло исключение NotFoundException. {}", e.getMessage(), e);
         return new ErrorResponse("Данные не найдены", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEmailAlreadyUsedException(EmailAlreadyUsedException e) {
-        log.error("Возникло исключение EmailAlreadyUsedException. {}", e.getMessage());
+        log.warn("Возникло исключение EmailAlreadyUsedException. {}", e.getMessage(), e);
         return new ErrorResponse("Почта уже используется", e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({BadHeaderException.class, EmptyFieldsException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleEmptyFieldsException(EmptyFieldsException e) {
-        log.error("Возникло исключение EmptyFieldsException. {}", e.getMessage());
-        return new ErrorResponse("Найдены пустые поля", e.getMessage());
+    public ErrorResponse handleBadRequestException(Exception e) {
+        log.warn("Возникло исключение BadRequestException. {}", e.getMessage(), e);
+        return new ErrorResponse("Переданы некорректные данные", e.getMessage());
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadHeaderException(BadHeaderException e) {
-        log.error("Возникло исключение BadHeaderException. {}", e.getMessage());
-        return new ErrorResponse("Некорректный заголовок", e.getMessage());
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleUnhandledException(Throwable e) {
+        log.error("Возникло необработанное исключение. {}", e.getMessage(), e);
+        return new ErrorResponse("Необработанное исключение", e.getMessage());
     }
 
 
