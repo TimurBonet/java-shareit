@@ -1,7 +1,9 @@
 package ru.practicum.shareit.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,7 +26,7 @@ public class ErrorHandler {
         return new ErrorResponse("Почта уже используется", e.getMessage());
     }
 
-    @ExceptionHandler({BadHeaderException.class, EmptyFieldsException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({BadHeaderException.class, EmptyFieldsException.class, MethodArgumentNotValidException.class, ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(Exception e) {
         log.warn("Возникло исключение BadRequestException. {}", e.getMessage(), e);
@@ -37,6 +39,4 @@ public class ErrorHandler {
         log.error("Возникло необработанное исключение. {}", e.getMessage(), e);
         return new ErrorResponse("Необработанное исключение", e.getMessage());
     }
-
-
 }

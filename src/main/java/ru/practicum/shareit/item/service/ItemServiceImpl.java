@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.BadHeaderException;
-import ru.practicum.shareit.exception.EmptyFieldsException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
@@ -23,18 +25,16 @@ import static ru.practicum.shareit.item.dto.mapper.ItemMapper.*;
 public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ItemDto createItem(ItemDto itemDto, long ownerId) {
         checkUserId(ownerId);
-        if (itemDto.getAvailable() == null || itemDto.getDescription() == null || itemDto.getName() == null) {
-            throw new EmptyFieldsException("Все поля не заполнены!");
-        }
-        if (itemDto.getName().isEmpty() || itemDto.getDescription().isEmpty()) {
-            throw new EmptyFieldsException("Поле не заполнено");
-        }
         log.debug("Creating item element : {}; for user {}", itemDto, ownerId);
-        return itemToDto(itemRepository.createItem(dtoToItem(itemDto), ownerId));
+        User owner = userRepository.getUserById(ownerId).get();
+        Item item = itemRepository.createItem(dtoToItem(itemDto), ownerId);
+        item.setOwner(owner);
+        return itemToDto(item);
     }
 
     @Override

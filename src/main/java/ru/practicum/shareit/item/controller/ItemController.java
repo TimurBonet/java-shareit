@@ -3,14 +3,17 @@ package ru.practicum.shareit.item.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.validationgroups.Marker;
 
 import static ru.practicum.shareit.item.constants.Constant.HEADER;
 
 import java.util.List;
 
+@Validated
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -38,13 +41,14 @@ public class ItemController {
     }
 
     @PostMapping
+    @Validated({Marker.Create.class})
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
         log.info("Creating item {} by user id {}", itemDto, userId);
         return itemService.createItem(itemDto, Integer.parseInt(userId));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable long itemId, @Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
+    public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
         log.info("Updating item {}, itemId {}, userId {}", itemDto, itemId, userId);
         itemDto.setId(itemId);
         return itemService.updateItem(itemDto, Integer.parseInt(userId));

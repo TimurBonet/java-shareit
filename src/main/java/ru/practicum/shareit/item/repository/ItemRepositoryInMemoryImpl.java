@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,7 +14,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @Slf4j
 public class ItemRepositoryInMemoryImpl implements ItemRepository {
-    private final UserRepository userRepository;
     private final Map<Long, List<Item>> items = new HashMap<>();
     private long itemId = 0;
 
@@ -23,7 +21,6 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     public Item createItem(Item item, long ownerId) {
         log.info("Creating new item");
         item.setId(++itemId);
-        item.setOwner(userRepository.getUserById(ownerId).get());
         items.compute(ownerId, (id, userItems) -> {
             if (userItems == null) {
                 userItems = new ArrayList<>();
@@ -32,8 +29,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
             return userItems;
         });
         log.debug("Try add new item {}", item);
-        int index = getItemIndex(item.getId(), ownerId);
-        return items.get(ownerId).get(index);
+        return item;
     }
 
     @Override
