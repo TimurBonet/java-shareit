@@ -1,8 +1,9 @@
 package ru.practicum.shareit.validationgroups;
 
 public interface Marker {
-    public interface Update {
+    interface Update {
     }
-    public interface Create {
+
+    interface Create {
     }
 }
