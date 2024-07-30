@@ -47,12 +47,19 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     public Optional<Item> getItemById(long itemId) {
         log.info("Getting item {}", itemId);
         Item item = null;
-        for (Long ownerId : items.keySet()) {
+        /*for (Long ownerId : items.keySet()) {
             item = items.get(ownerId).stream()
                     .filter(i -> i.getId() == itemId)
                     .findFirst().orElse(null);
+        }*/
+        for (List<Item> itemList : items.values()) {
+            for (Item item1 : itemList) {
+                if (item1.getId() == itemId) {
+                    item = item1;
+                }
+            }
         }
-        return Optional.of(item);
+        return /*Optional.of(item)*/Optional.ofNullable(Optional.ofNullable(item).orElseThrow(() -> new NotFoundException("Предмет не найден")));
     }
 
     @Override
@@ -70,6 +77,14 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
                     .filter(x -> x.getDescription().toLowerCase().contains(text))
                     .collect(Collectors.toList()));
         }
+
+        for (Long ownerId : items.keySet()) {
+            availableItems.addAll(getItemsByOwnerId(ownerId).stream()
+                    .filter(x -> x.getAvailable().equals(true))
+                    .filter(x -> x.getName().toLowerCase().contains(text))
+                    .collect(Collectors.toList()));
+        }
+
         return availableItems;
     }
 
