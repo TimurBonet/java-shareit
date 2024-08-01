@@ -41,8 +41,7 @@ public class ItemController {
     }
 
     @PostMapping
-    @Validated({Marker.Create.class})
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
+    public ItemDto createItem(@Validated({Marker.Create.class}) @RequestBody ItemDto itemDto, @RequestHeader(HEADER) String userId) {
         log.info("Creating item {} by user id {}", itemDto, userId);
         return itemService.createItem(itemDto, Integer.parseInt(userId));
     }

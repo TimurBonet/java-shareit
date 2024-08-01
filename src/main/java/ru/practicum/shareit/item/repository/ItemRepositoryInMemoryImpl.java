@@ -47,11 +47,6 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
     public Optional<Item> getItemById(long itemId) {
         log.info("Getting item {}", itemId);
         Item item = null;
-        /*for (Long ownerId : items.keySet()) {
-            item = items.get(ownerId).stream()
-                    .filter(i -> i.getId() == itemId)
-                    .findFirst().orElse(null);
-        }*/
         for (List<Item> itemList : items.values()) {
             for (Item item1 : itemList) {
                 if (item1.getId() == itemId) {
@@ -59,7 +54,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
                 }
             }
         }
-        return /*Optional.of(item)*/Optional.ofNullable(Optional.ofNullable(item).orElseThrow(() -> new NotFoundException("Предмет не найден")));
+        return Optional.ofNullable(Optional.ofNullable(item).orElseThrow(() -> new NotFoundException("Предмет не найден")));
     }
 
     @Override

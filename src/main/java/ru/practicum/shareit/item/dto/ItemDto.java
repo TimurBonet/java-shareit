@@ -10,11 +10,10 @@ import ru.practicum.shareit.validationgroups.Marker;
 @Builder
 public class ItemDto {
     public Long id;
-    @NotBlank(groups = {Marker.Create.class})
-    @NotNull(message = "поле name не заполнено")
+    @NotBlank(groups = {Marker.Create.class}, message = "поле name не заполнено")
     public String name;
-    @NotNull(message = "поле description не заполнено")
+    @NotNull(groups = {Marker.Create.class}, message = "поле description не заполнено")
     public String description;
-    @NotNull(message = "поле available не заполнено")
+    @NotNull(groups = {Marker.Create.class}, message = "поле available не заполнено")
     public Boolean available;
 }
