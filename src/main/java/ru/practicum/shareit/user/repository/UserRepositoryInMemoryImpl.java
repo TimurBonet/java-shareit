@@ -1,3 +1,4 @@
+/*
 package ru.practicum.shareit.user.repository;
 
 import lombok.RequiredArgsConstructor;
@@ -63,3 +64,4 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
         uniqueEmails.remove(users.remove(id).getEmail());
     }
 }
+*/

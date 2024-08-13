@@ -1,19 +1,37 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import ru.practicum.shareit.request.ItemRequest;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
-@Builder
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "items")
+@EqualsAndHashCode(of = "id")
 public class Item {
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotBlank
+    @Column(name = "name")
     private String name;
+
+    @Column
     private String description;
+
+    @NotBlank
+    @Column
     private Boolean available;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private User owner;
-    private ItemRequest request;
+
 }

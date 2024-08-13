@@ -34,9 +34,17 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleDataAccessException(DataAccessException e) {
+        log.error("Возникло необработанное исключение. {}", e.getMessage(), e);
+        return new ErrorResponse("Необработанное исключение", e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleUnhandledException(Throwable e) {
         log.error("Возникло необработанное исключение. {}", e.getMessage(), e);
         return new ErrorResponse("Необработанное исключение", e.getMessage());
     }
+
 }

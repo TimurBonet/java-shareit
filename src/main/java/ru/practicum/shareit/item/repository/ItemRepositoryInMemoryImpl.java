@@ -1,3 +1,4 @@
+/*
 package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
@@ -90,3 +91,4 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
                 .orElse(-1);
     }
 }
+*/
