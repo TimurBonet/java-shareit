@@ -15,10 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 @EqualsAndHashCode(of = {"id"})
 public class ItemRequest {
-    @NotNull
-    private Long id;
+    private long id;
     private String description;
-    @NonNull
-    private Long requestor;
+    private long requestorId;
     private LocalDateTime created;
 }

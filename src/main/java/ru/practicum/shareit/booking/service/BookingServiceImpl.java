@@ -34,13 +34,13 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
-    public ResponseBookingDto create(RequestBookingDto creatingBooking, long id) {
-        log.info("Create booking with id {}", id);
+    public ResponseBookingDto create(RequestBookingDto creatingBooking, long userId) {
+        log.info("Create booking with id {}", userId);
 
         if (creatingBooking.getStart().isAfter(creatingBooking.getEnd())) {
             throw new ValidationException("Начало бронирования не может быть позже конца бронирования");
         }
-        User user = userRepository.findById(id)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Несуществующий пользователь"));
         Item item = itemRepository.findById(creatingBooking.getItemId())
                 .orElseThrow(() -> new NotFoundException("Такого предмета не существует"));
@@ -49,12 +49,12 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Предмет недоступен, забронируйте позже");
         }
 
-        Booking booking = bookingMapper.requestBookingToBookingDto(creatingBooking);
+        Booking booking = bookingMapper.requestBookingDtoToBooking(creatingBooking);
         booking.setBooker(user);
         booking.setItem(item);
         booking.setStatus(Status.WAITING);
         booking = bookingRepository.save(booking);
-        log.info("Бронирование проведено");
+        log.info("Бронирование проведено {}", bookingMapper.bookingToResponseBookingDto(booking));
         return bookingMapper.bookingToResponseBookingDto(booking);
     }
 
@@ -95,20 +95,14 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
 
         switch (state) {
-            case ALL:
-                bookings = bookingRepository.findByBookerId(bookerId);
-            case PAST:
-                bookings = bookingRepository.findAllBookingByBookerAndPast(bookerId, LocalDateTime.now());
-            case CURRENT:
-                bookings = bookingRepository.findAllBookingByBookerAndCurrent(bookerId, LocalDateTime.now());
-            case FUTURE:
-                bookings = bookingRepository.findAllBookingByBookerAndFuture(bookerId, LocalDateTime.now());
-            case REJECTED:
-                bookings = bookingRepository.findByBookerIdAndStatus(bookerId, Status.REJECTED.name());
-            case WAITING:
-                bookings = bookingRepository.findByBookerIdAndStatus(bookerId, Status.WAITING.name());
-            case null, default:
-                bookings = new ArrayList<>();
+            case ALL -> bookings = bookingRepository.findByBookerId(bookerId);
+            case PAST -> bookings = bookingRepository.findAllBookingByBookerAndPast(bookerId, LocalDateTime.now());
+            case CURRENT ->
+                    bookings = bookingRepository.findAllBookingByBookerAndCurrent(bookerId, LocalDateTime.now());
+            case FUTURE -> bookings = bookingRepository.findAllBookingByBookerAndFuture(bookerId, LocalDateTime.now());
+            case REJECTED -> bookings = bookingRepository.findByBookerIdAndStatus(bookerId, Status.REJECTED.name());
+            case WAITING -> bookings = bookingRepository.findByBookerIdAndStatus(bookerId, Status.WAITING.name());
+            case null, default -> bookings = new ArrayList<>();
         }
         log.info("Список бронирований сформирован");
         return bookings.stream()

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,11 +13,11 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ItemRequestDto {
-    @NotNull
-    private Long id;
+    private long id;
     private String description;
+    @Positive
+    private long requestorId;
     @NotNull
-    private Long requestor;
     private LocalDateTime created;
 }
 

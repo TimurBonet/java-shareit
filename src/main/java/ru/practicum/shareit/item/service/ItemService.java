@@ -12,7 +12,7 @@ public interface ItemService {
 
     CommentDto createComment(CommentDto commentDto, long itemId, long userId);
 
-    ItemDto updateItem(ItemDto itemDto, long itemId, long ownerId);
+    ItemDto update(ItemDto itemDto, long itemId, long ownerId);
 
     ItemDto findById(long itemId);
 

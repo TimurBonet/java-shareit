@@ -19,13 +19,14 @@ public class Item {
     private long id;
 
     @NotBlank
-    @Column(name = "name")
+    @Column
     private String name;
 
+    @NotBlank
     @Column
     private String description;
 
-    @NotBlank
+    @NotNull
     @Column
     private Boolean available;
 

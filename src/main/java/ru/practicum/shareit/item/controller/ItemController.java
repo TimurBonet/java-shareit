@@ -52,12 +52,12 @@ public class ItemController {
                                     @PathVariable long itemId,
                                     @RequestHeader(HEADER) long userId) {
         log.info("Creating comment {} by user id {} for item id {}", commentDto, userId, itemId);
-        return itemService.createComment(commentDto, userId, itemId);
+        return itemService.createComment(commentDto, itemId, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto, @RequestHeader(HEADER) long userId) {
         log.info("Updating item {}, itemId {}, userId {}", itemDto, itemId, userId);
-        return itemService.updateItem(itemDto, itemId, userId);
+        return itemService.update(itemDto, itemId, userId);
     }
 }

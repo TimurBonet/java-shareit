@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
             throw new EmptyFieldsException("Email не заполнен");
         }
 
-        log.debug("Try creating user: {}", userDto);
+        log.debug("Try creating user: {} with id {}", userDto, userDto.getId());
         return userMapper.userToDto(userRepository.save(userMapper.dtoToUser(userDto)));
     }
 

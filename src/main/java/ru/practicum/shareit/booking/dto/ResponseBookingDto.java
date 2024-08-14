@@ -15,6 +15,6 @@ public class ResponseBookingDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private ItemDto item;
-    private UserDto user;
+    private UserDto booker;
     private Status status;
 }

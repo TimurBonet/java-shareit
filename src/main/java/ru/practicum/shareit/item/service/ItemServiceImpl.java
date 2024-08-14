@@ -29,17 +29,17 @@ import java.util.List;
 import java.util.stream.Collectors;;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 @Transactional
 public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final ItemMapper itemMapper;
     private final BookingMapper bookingMapper;
+    private final ItemRepository itemRepository;
 
     @Override
     public ItemDto createItem(ItemDto itemDto, long ownerId) {
@@ -48,6 +48,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с id " + ownerId + " не найден"));
         Item item = itemMapper.dtoToItem(itemDto);
         item.setOwner(owner);
+        item = itemRepository.save(item);
         return itemMapper.itemToDto(item);
     }
 
@@ -72,15 +73,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, long id, long ownerId) {
-        log.info("Updating item with id {} and ownerId {}", id, ownerId);
-        Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Предмет с Id " + id + " отсутствует"));
+    public ItemDto update(ItemDto itemDto, long itemId, long ownerId) {
+        log.info("Updating item with id {} and ownerId {}", itemId, ownerId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Предмет с Id " + itemId + " отсутствует"));
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Такой владелец отсутствует");
         }
         if (item.getOwner().getId() != ownerId) {
             throw new DataAccessException("У вас нет доступа к этой информации");
+        }
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
+            item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
             item.setDescription(itemDto.getDescription());
