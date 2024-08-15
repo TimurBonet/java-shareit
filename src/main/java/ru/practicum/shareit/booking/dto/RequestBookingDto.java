@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ public class RequestBookingDto {
     private Long id;
     @NotNull(message = "Дата начала бронирования должна присутствовать")
     private LocalDateTime start;
+    @Future
     @NotNull(message = "Дата окончания бронирования должна присутствовать")
     private LocalDateTime end;
     @NotNull(message = "Арендованный предмет не может быть пустым")
